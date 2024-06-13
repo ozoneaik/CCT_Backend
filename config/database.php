@@ -93,6 +93,26 @@ return [
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
 
+        'db_kyc' => [
+            'driver' => 'mysql',
+            'url' => env('DATABASE_UR_KYCL'),
+            'host' => env('DB_HOST_KYC', '127.0.0.1'),
+            'port' => env('DB_PORT_KYC', '3306'),
+            'database' => env('DB_DATABASE_KYC', 'forge'),
+            'username' => env('DB_USERNAME_KYC', 'forge'),
+            'password' => env('DB_PASSWORD_KYC', ''),
+            'unix_socket' => env('DB_SOCKET_KYC', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
     ],
 
     /*

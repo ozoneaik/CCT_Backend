@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\MaCustomerController;
+use App\Http\Controllers\MaProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/ma_customer',[MaCustomerController::class,'index']);
+Route::get('/ma_products' , [MaProductController::class,'index']);

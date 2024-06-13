@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaCustomerController;
 use App\Http\Controllers\MaProductController;
 use Illuminate\Http\Request;
@@ -16,9 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->group(function() {
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
 
 Route::get('/ma_customer',[MaCustomerController::class,'index']);
 Route::get('/ma_products' , [MaProductController::class,'index']);
+
+Route::post('/login',[AuthController::class,'login']);
+Route::get('/test-api',function (){
+    dd('heleo');
+});

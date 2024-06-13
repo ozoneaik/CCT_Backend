@@ -3,7 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaCustomerController;
 use App\Http\Controllers\MaProductController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\WiTargetSaleController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +18,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->group(function() {
+
+    //เป้าหมายที่จะทำ
+    Route::group(['prefix' => 'wi_target_sale'], function() {
+        Route::get('/list/{year}/{month}/{cust_id}',[WiTargetSaleController::class,'index']);
+        Route::post('/create',[WiTargetSaleController::class,'create']);
+    });
+
+
+
+
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 

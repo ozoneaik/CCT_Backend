@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static take(int $int)
+ * @method static where(string $string, $id)
+ *
  * @property mixed $custid
  * @property mixed $target_sale
  * @property mixed $target_month
@@ -30,11 +32,13 @@ class WiTargetSale extends Model
 
     public $timestamps = false;
 
+
+
     protected static function boot() : void
     {
         parent::boot();
         static::addGlobalScope('order', function (Builder $builder) {
-            $builder->orderBy('id', 'asc');
+            $builder->orderBy('target_month', 'desc');
         });
     }
 }

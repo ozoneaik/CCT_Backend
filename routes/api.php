@@ -21,20 +21,13 @@ Route::middleware('auth:sanctum')->group(function() {
 
     //เป้าหมายที่จะทำ
     Route::group(['prefix' => 'wi_target_sale'], function() {
-        Route::get('/list/{year}/{month}/{cust_id}',[WiTargetSaleController::class,'index']);
+        Route::get('/list-target/{year}/{month}/{cust_id}', [WiTargetSaleController::class, 'ListTarget']);
+        Route::get('/list/{cust_id}',[WiTargetSaleController::class,'List']);
         Route::post('/create',[WiTargetSaleController::class,'create']);
+        Route::post('/update',[WiTargetSaleController::class,'update']);
     });
-
-
-
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-Route::get('/ma_customer',[MaCustomerController::class,'index']);
-Route::get('/ma_products' , [MaProductController::class,'index']);
-
 Route::post('/login',[AuthController::class,'login']);
-Route::get('/test-api',function (){
-    dd('heleo');
-});

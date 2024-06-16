@@ -8,6 +8,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 
@@ -30,6 +31,10 @@ class AuthController extends Controller
             'token' => $token->plainTextToken,
             'message' => 'เข้าสู่ระบบสำเร็จ'
         ]);
+    }
+
+    public function me(Request $request){
+        return $request->user();
     }
 
     public function logout(Request $request): JsonResponse

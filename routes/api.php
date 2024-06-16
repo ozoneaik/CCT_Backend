@@ -19,6 +19,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:sanctum')->group(function() {
 
+    Route::get('/me', [AuthController::class, 'me']);
+
+
     //เป้าหมายที่จะทำ
     Route::group(['prefix' => 'wi_target_sale'], function() {
         Route::get('/list-target/{year}/{month}/{cust_id}', [WiTargetSaleController::class, 'ListTarget']);

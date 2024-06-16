@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaCustomerController;
 use App\Http\Controllers\MaProductController;
+use App\Http\Controllers\WiTargetProController;
 use App\Http\Controllers\WiTargetSaleController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +29,11 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/list/{cust_id}',[WiTargetSaleController::class,'List']);
         Route::post('/create',[WiTargetSaleController::class,'create']);
         Route::post('/update',[WiTargetSaleController::class,'update']);
+    });
+
+    //รายการโปรโมชั่นที่นำเสนอ
+    Route::group(['prefix' => 'wi_target_pro'], function() {
+        Route::get('/list_target_pro/{year}/{month}/{cust_id}',[WiTargetProController::class, 'ListTargetPro']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

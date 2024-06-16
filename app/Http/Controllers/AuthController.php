@@ -6,6 +6,7 @@ use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
@@ -23,15 +24,16 @@ class AuthController extends Controller
                 'message' => 'ผู้ใช้งานระบบหรือรหัสผ่านไม่ถูกต้อง'
             ], 422);
         }
-        $token = $user->createToken('main')->plainTextToken;
+        $token = User::generateToken($user);
         return response([
             'user' => $user,
-            'token' => $token,
+            'token' => $token->plainTextToken,
             'message' => 'เข้าสู่ระบบสำเร็จ'
         ]);
     }
 
-    public function logout(Request $request){
+    public function logout(Request $request): JsonResponse
+    {
         /** @var User $user */
         $user = auth()->user();
         $user->currentAccessToken()->delete();

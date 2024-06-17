@@ -13,7 +13,7 @@ class WiTargetBoothRequest extends FormRequest
      */
     public function authorize() : bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,14 +24,20 @@ class WiTargetBoothRequest extends FormRequest
     public function rules() : array
     {
         return [
-            //
+            'startdate' => 'required',
+            'enddate' => 'required',
+            'booth_month' => 'required',
+            'custid' => 'required',
         ];
     }
 
     public function message() : array
     {
         return [
-            //
+            'startdate.required' => 'Start date is required.',
+            'enddate.required' => 'End date is required.',
+            'booth_month.required' => 'Booth month is required.',
+            'custid.required' => 'Custid is required.',
         ];
     }
 }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\MaCustomerController;
 use App\Http\Controllers\MaProductController;
+use App\Http\Controllers\WiTargetBoothController;
 use App\Http\Controllers\WiTargetProController;
 use App\Http\Controllers\WiTargetSaleController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,13 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/list_target_pro/{year}/{month}/{cust_id}',[WiTargetProController::class, 'ListTargetPro']);
         Route::get('get_sku_name/{pro_sku}',[WiTargetProController::class, 'getSkuName']);
         Route::post('/create',[WiTargetProController::class,'create']);
+    });
+
+    //ระยะเวลาออกบูธ
+    Route::group(['prefix' => 'wi_target_booth'], function() {
+        Route::get('/list_target_booth/{year}/{month}/{cust_id}',[WiTargetBoothController::class, 'ListTargetBooth']);
+        Route::post('/create',[WiTargetBoothController::class,'create']);
+        Route::delete('/delete/{id}',[WiTargetBoothController::class,'delete']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

@@ -24,4 +24,8 @@ class WiTargetBoothSku extends Model
             $builder->orderBy('id', 'asc');
         });
     }
+
+    public function GetNameSku (){
+        return $this->belongsTo(MaProduct::class,'skucode','pid')->select('pid', 'pname');
+    }
 }

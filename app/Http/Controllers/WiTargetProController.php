@@ -36,11 +36,12 @@ class WiTargetProController extends Controller
         return response()->json($sku_name);
     }
 
-    public function create(WiTargetProRequest $request){
-//        $validatedData = $request->validated();
+    public function create(WiTargetProRequest $request): JsonResponse
+    {
         $promotions = $request->all();
-//        dd($promotions[0]['pro_month']);
-        $this->wiTargetProService->delete($promotions[0]['pro_month']);
+        if (!count($promotions) <= 0){
+            $this->wiTargetProService->delete($promotions[0]['pro_month']);
+        }
         try {
             foreach ($promotions as $index=>$promotion){
                 $this->wiTargetProService->create($promotion);

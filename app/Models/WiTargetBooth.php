@@ -5,9 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @method static take(int $int)
+ * @method static where(string $string, $cust_id)
+ * @property mixed $startdate
+ * @property mixed $enddate
+ * @property mixed $custid
+ * @property mixed $booth_month
+ * @property mixed $createon
  */
 class WiTargetBooth extends Model
 {
@@ -16,6 +23,10 @@ class WiTargetBooth extends Model
 
     protected $table = 'wi_target_booth';
 
+    protected $fillable = ['startdate','enddate','booth_month','custid'];
+
+    public $timestamps = false;
+
     protected static function boot() : void
     {
         parent::boot();
@@ -23,4 +34,11 @@ class WiTargetBooth extends Model
             $builder->orderBy('id', 'asc');
         });
     }
+
+    public function GetBoothSku (): HasMany
+    {
+        return $this->hasMany(WiTargetBoothSku::class, 'id_targetbooth', 'id');
+    }
+
+
 }

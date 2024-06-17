@@ -1,9 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\MaCustomerController;
-use App\Http\Controllers\MaProductController;
 use App\Http\Controllers\WiTargetBoothController;
+use App\Http\Controllers\WiTargetBoothSkuController;
 use App\Http\Controllers\WiTargetProController;
 use App\Http\Controllers\WiTargetSaleController;
 use Illuminate\Support\Facades\Route;
@@ -44,6 +43,8 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/list_target_booth/{year}/{month}/{cust_id}',[WiTargetBoothController::class, 'ListTargetBooth']);
         Route::post('/create',[WiTargetBoothController::class,'create']);
         Route::delete('/delete/{id}',[WiTargetBoothController::class,'delete']);
+
+        Route::post('/create-boothSku',[WiTargetBoothSkuController::class,'create']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

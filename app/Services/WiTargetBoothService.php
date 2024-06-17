@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\WiTargetBooth;
+use App\Models\WiTargetBoothSku;
 use Carbon\Carbon;
 
 class WiTargetBoothService
@@ -41,6 +42,8 @@ class WiTargetBoothService
 
     public function delete($id) :bool
     {
+        $deleteTargetBoothSku = WiTargetBoothSku::where('id_targetbooth', $id);
+        $deleteTargetBoothSku->delete();
         $deleteTargetBooth = WiTargetBooth::find($id);
         if ($deleteTargetBooth->delete()) {
             return true;

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * @method static take(int $int)
  * @method static where(string $string, $cust_id)
+ * @method static find($id)
  * @property mixed $startdate
  * @property mixed $enddate
  * @property mixed $custid

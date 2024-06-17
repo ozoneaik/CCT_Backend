@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static take(int $int)
+ * @method static select(string $string)
  */
 class MaProduct extends Model
 {

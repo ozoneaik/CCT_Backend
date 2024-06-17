@@ -34,6 +34,8 @@ Route::middleware('auth:sanctum')->group(function() {
     //รายการโปรโมชั่นที่นำเสนอ
     Route::group(['prefix' => 'wi_target_pro'], function() {
         Route::get('/list_target_pro/{year}/{month}/{cust_id}',[WiTargetProController::class, 'ListTargetPro']);
+        Route::get('get_sku_name/{pro_sku}',[WiTargetProController::class, 'getSkuName']);
+        Route::post('/create',[WiTargetProController::class,'create']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

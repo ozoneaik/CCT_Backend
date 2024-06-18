@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WiTargetBoothController;
 use App\Http\Controllers\WiTargetBoothSkuController;
+use App\Http\Controllers\WiTargetNewSkuController;
 use App\Http\Controllers\WiTargetProController;
 use App\Http\Controllers\WiTargetSaleController;
 use App\Http\Controllers\WiTargetTrainController;
@@ -30,6 +31,12 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/list/{cust_id}',[WiTargetSaleController::class,'List']);
         Route::post('/create',[WiTargetSaleController::class,'create']);
         Route::put('/update',[WiTargetSaleController::class,'update']);
+    });
+
+    //รายการสินค้านำเสนอใหม่
+    Route::group(['prefix' => 'wi_target_new_sku'], function() {
+        Route::get('list_target_new_sku/{year}/{month}/{cust_id}', [WiTargetNewSkuController::class, 'ListNewSku']);
+        Route::post('/create',[WiTargetNewSkuController::class,'create']);
     });
 
     //รายการโปรโมชั่นที่นำเสนอ

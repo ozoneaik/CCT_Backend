@@ -36,7 +36,7 @@ class WiTargetBoothController extends Controller
         $target_month = $this->convertDateTime($request->booth_month);
         $TargetBooth = $this->wiTargetBoothService->create($request->all(),$target_month);
         return response()->json([
-            '$TargetBooth' => $TargetBooth,
+            'TargetBooth' => $TargetBooth,
             'message' => 'Success',
         ],200);
     }

@@ -31,7 +31,6 @@ class WiTargetBoothService
     {
         $TargetBooth = new WiTargetBooth();
         $TargetBooth->startdate = $request['startdate'];
-
         $TargetBooth->enddate = $request['enddate'];
         $TargetBooth->custid = $request['custid'];
         $TargetBooth->booth_month = $target_month;

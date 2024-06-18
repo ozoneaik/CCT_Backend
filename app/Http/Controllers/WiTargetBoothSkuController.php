@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\WiTargetBoothSkuRequest;
 use App\Services\WiTargetBoothSkuService;
+use Illuminate\Http\JsonResponse;
 
 class WiTargetBoothSkuController extends Controller
 {
@@ -14,18 +15,18 @@ class WiTargetBoothSkuController extends Controller
         $this->wiTargetBoothSkuService = $wiTargetBoothSkuService;
     }
 
-    public function index()
-    {
-        //
-    }
-
-    public function create(WiTargetBoothSkuRequest $request)
+    public function create(WiTargetBoothSkuRequest $request): JsonResponse
     {
         try {
-            $IdTargetBoothSku = $request['boothSku'][0]['id_targetbooth'];
-            $TargetBoothSkus = $request->boothSku;
-            $TargetBoothSkuDelete = $this->wiTargetBoothSkuService->delete($IdTargetBoothSku);
-            foreach ($TargetBoothSkus as $index=>$targetBoothSku) {
+            $targetBoothSkus = $request->boothSku;
+            if (empty($targetBoothSkus) || !is_array($targetBoothSkus)) {
+                return response()->json([
+                    'message' => 'Invalid data provided',
+                ], 400);
+            }
+            $idTargetBoothSku = $targetBoothSkus[0]['id_targetbooth'];
+            $this->wiTargetBoothSkuService->delete($idTargetBoothSku);
+            foreach ($targetBoothSkus as $targetBoothSku) {
                 $this->wiTargetBoothSkuService->create($targetBoothSku);
             }
             return response()->json([

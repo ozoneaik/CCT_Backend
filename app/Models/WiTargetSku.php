@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @method static take(int $int)
@@ -25,5 +26,9 @@ class WiTargetSku extends Model
         static::addGlobalScope('order', function (Builder $builder) {
             $builder->orderBy('id', 'asc');
         });
+    }
+
+    public function SkuName (): HasOne{
+        return $this->hasOne(MaProduct::class, 'pid', 'target_sku_id');
     }
 }

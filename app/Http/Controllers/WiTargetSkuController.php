@@ -18,7 +18,7 @@ class WiTargetSkuController extends Controller
         return Carbon::createFromFormat('Y/m', $value)->startOfMonth();
     }
 
-    public function ListTarget($year,$month,$cust_id){
+    public function ListTarget($year, $month, $cust_id) {
         $target_month = $year . '/' . $month;
         $target_month = $this->convertDateTime($target_month);
         $carbon_target_month = Carbon::parse($target_month);
@@ -27,14 +27,23 @@ class WiTargetSkuController extends Controller
         $target_month_one_ago = $target_month_one_ago->format('Y-m-d 00:00:00');
         $target_month_two_ago = $target_month_two_ago->format('Y-m-d 00:00:00');
 
-        $TargetSkusOneAgo = $this->wiTargetSkuService->getWiTargetSkuOneAgo($target_month_one_ago,$cust_id);
-        $TargetSkusTwoAgo = $this->wiTargetSkuService->getWiTargetSkuTwoAgo($target_month_two_ago,$cust_id);
-        $TargetSkusAll = $this->wiTargetSkuService->getWiTargetSkuAll($cust_id,$target_month_one_ago);
+        $TargetSkusOneAgo = $this->wiTargetSkuService->getWiTargetSkuOneAgo($target_month_one_ago, $cust_id);
+        $TargetSkusTwoAgo = $this->wiTargetSkuService->getWiTargetSkuTwoAgo($target_month_two_ago, $cust_id);
+        $TargetSkusAll = $this->wiTargetSkuService->getWiTargetSkuAll($cust_id, $target_month);
+
+        // Collect all unique SKUs from both OneAgo and TwoAgo
+
+
         return response()->json([
             'TargetSkusAll' => $TargetSkusAll,
+            'TargetSkusOneAgo' => $TargetSkusOneAgo,
+            'TargetSkusTwoAgo' => $TargetSkusTwoAgo,
             'message' => 'success'
-        ],200);
+        ], 200);
     }
+
+
+
 
     public function ListTargetNow($year,$month,$cust_id){
         $target_month = $year . '/' . $month;

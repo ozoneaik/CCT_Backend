@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 
-
 use App\Http\Requests\WiTargetNewSkuRequest;
+use App\Models\WiTargetSku;
 use App\Services\WiTargetNewSkuService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +13,8 @@ class WiTargetNewSkuController extends Controller
 {
     protected WiTargetNewSkuService $wiTargetNewSkuService;
 
-    public function __construct(WiTargetNewSkuService $wiTargetNewSkuService){
+    public function __construct(WiTargetNewSkuService $wiTargetNewSkuService)
+    {
         $this->wiTargetNewSkuService = $wiTargetNewSkuService;
     }
 
@@ -25,42 +26,65 @@ class WiTargetNewSkuController extends Controller
     public function ListNewSku($year, $month, $cust_id): JsonResponse
     {
         try {
-            $target_month = $year.'/'.$month;
+            $target_month = $year . '/' . $month;
             $target_month = $this->convertDateTime($target_month);
-            $TargetNewSkus = $this->wiTargetNewSkuService->getWiTargetNewSku($target_month,$cust_id);
+            $TargetNewSkus = $this->wiTargetNewSkuService->getWiTargetNewSku($target_month, $cust_id);
             return response()->json([
                 'message' => count($TargetNewSkus) > 0 ? "Success" : "Failed",
                 'ListNewSkus' => count($TargetNewSkus) > 0 ? $TargetNewSkus : [],
-            ],200);
-        }catch (\Exception $exception){
+            ], 200);
+        } catch (\Exception $exception) {
             return response()->json([
                 'message' => $exception->getMessage()
-            ],400);
+            ], 400);
         }
     }
+
 
     public function create(WiTargetNewSkuRequest $request): JsonResponse
     {
         try {
             $TargetNewSkus = $request->skus;
-            $delete = $this->wiTargetNewSkuService->delete($TargetNewSkus[0]['new_target_month']);
-            if ($delete){
-                foreach ($TargetNewSkus as $TargetNewSku) {
-                    $this->wiTargetNewSkuService->create($TargetNewSku);
+            $sku_already = '';
+            // เตรียมตัวแปรเก็บ custid และ new_sku ที่มีอยู่ในฐานข้อมูล wi_target_sku ของเดือนที่รับเข้ามา
+            $existingSkus = $this->wiTargetNewSkuService->CheckSku($TargetNewSkus);
+            // ตรวจสอบว่ามีรายการที่ซ้ำหรือไม่
+            $duplicateFound = false;
+            foreach ($TargetNewSkus as $TargetNewSku) {
+                foreach ($existingSkus as $existingSku) {
+                    if ($existingSku->custid == $TargetNewSku['cust_id'] && $existingSku->target_sku_id == $TargetNewSku['new_sku']) {
+                        $duplicateFound = true;
+                        $sku_already = 'รหัสสินค้าที่ซ้ำ '.$existingSku->target_sku_id;
+                        break 2; // ออกจากการวนลูปทั้งหมด
+                    }
                 }
             }
-            $message = "บันทึกสำเร็จ";
-        }catch (\Exception $exception){
-            $message = "บันทึกไม่สำเร็จ";
+            if ($duplicateFound) {// ถ้าพบรายการที่ซ้ำ
+                return response()->json([
+                    'subMessage' => "ตรวจพบรหัสสินค้า ".$sku_already." ซ้ำในรายการสินค้าที่จะสั่งซ้ำ",
+                    'message' => 'เกิดข้อผิดพลาด'
+                ], 400);
+            } else {
+                $delete = $this->wiTargetNewSkuService->delete($TargetNewSkus[0]['new_target_month']);
+                if ($delete) {
+                    foreach ($TargetNewSkus as $TargetNewSku) {
+                        $this->wiTargetNewSkuService->create($TargetNewSku);
+                    }
+                }
+                return response()->json([
+                    'message' => "บันทึกสำเร็จ"
+                ], 200);
+            }
+        } catch (\Exception $exception) {
+            return response()->json([
+                'message' => $exception->getMessage()
+            ], 400);
         }
-        return response()->json([
-            'message' => $message
-        ]);
     }
 
 
-
-    public function delete($id){
+    public function delete($id)
+    {
 
     }
 }

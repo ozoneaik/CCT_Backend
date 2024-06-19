@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * @method static take(int $int)
+ * @method static whereIn(string $string, array $array_column)
+ * @method static where(string $string, mixed $new_target_month)
  */
 class WiTargetSku extends Model
 {

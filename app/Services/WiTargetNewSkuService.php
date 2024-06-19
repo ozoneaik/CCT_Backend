@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\WiTargetNewSku;
+use App\Models\WiTargetSku;
 use Carbon\Carbon;
 
 class WiTargetNewSkuService{
@@ -32,6 +33,13 @@ class WiTargetNewSkuService{
         }
     }
 
+    public function CheckSku($TargetNewSkus) {
+        return WiTargetSku::
+            whereIn('custid', array_column($TargetNewSkus, 'cust_id'))
+            ->whereIn('target_sku_id', array_column($TargetNewSkus, 'new_sku'))
+            ->get();
+    }
+
     public function create($TargetNewSku) : bool{
         try {
             $new_TargetNewSku = new WiTargetNewSku();
@@ -41,19 +49,6 @@ class WiTargetNewSkuService{
             $new_TargetNewSku->new_target_month = $TargetNewSku['new_target_month'];
             $new_TargetNewSku->createon = Carbon::now();
             $new_TargetNewSku->save();
-            return true;
-        }catch (\Exception $exception){
-            return false;
-        }
-    }
-
-    public function update($id,$TargetNewSku) : bool{
-        try {
-            $update_TargetSku = WiTargetNewSku::find($id)->first();
-            $update_TargetSku->custid = $TargetNewSku['cust_id'];
-            $update_TargetSku->new_sku = $TargetNewSku['new_sku'];
-            $update_TargetSku->new_target_sale = $TargetNewSku['new_target_sale'];
-            $update_TargetSku->save();
             return true;
         }catch (\Exception $exception){
             return false;

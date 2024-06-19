@@ -29,7 +29,7 @@ class WiTargetTrainService{
     public function update($id,$desc): bool
     {
         try {
-            $TargetTrain = WiTargetTrain::find($id)->first();
+            $TargetTrain = WiTargetTrain::where('id' , $id)->first();
             $TargetTrain->train_desc = $desc;
             $TargetTrain->save();
             return true;

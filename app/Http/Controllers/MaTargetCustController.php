@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MaTargetCust;
 use App\Services\MaTargetCustService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 
 class MaTargetCustController extends Controller
 {
@@ -13,9 +15,27 @@ class MaTargetCustController extends Controller
         $this->maTargetCustService = $maTargetCustService;
     }
 
-    public function index(): JsonResponse
+    public function list(): JsonResponse
     {
-        $data = $this->maTargetCustService->getMaTargetCustList();
-        return response()->json($data);
+        try {
+            $user = Auth::user();
+            $username = !empty($user->username) ? $user->username : '';
+
+            $TargetCust = $this->maTargetCustService->getMaTargetCustById($username);
+            $TargetCustTotal = count($TargetCust);
+            $CustAllTotal = $this->maTargetCustService->getCustAllTotal($username);
+            $CustAllTotal = count($CustAllTotal);
+
+            return response()->json([
+                'message' => 'Success',
+                'TargetCust' => $TargetCust,
+                'TargetCustTotal' => $TargetCustTotal,
+                'CustAllTotal' => $CustAllTotal,
+            ],200);
+        }catch (\Exception $exception){
+            return response()->json([
+                'message' => $exception->getMessage()
+            ],400);
+        }
     }
 }

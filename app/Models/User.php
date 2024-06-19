@@ -10,6 +10,9 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @method static where(string $string, mixed $email)
  * @method static create(array $array)
+ *
+ *
+ * @property string $username
  */
 class User extends Authenticatable
 {
@@ -24,6 +27,7 @@ class User extends Authenticatable
         'name',
         'username',
         'password',
+        'username'
     ];
 
     /**
@@ -40,5 +44,14 @@ class User extends Authenticatable
     {
         $user->tokens()->delete();
         return $user->createToken('login-token', ['webapp']);
+    }
+
+    public function __get($key)
+    {
+        if (array_key_exists($key, $this->attributes)) {
+            return $this->attributes[$key];
+        }
+
+        return parent::__get($key);
     }
 }

@@ -46,20 +46,18 @@ class WiTargetNewSkuController extends Controller
         try {
             $TargetNewSkus = $request->skus;
             $sku_already = '';
-            // เตรียมตัวแปรเก็บ custid และ new_sku ที่มีอยู่ในฐานข้อมูล wi_target_sku ของเดือนที่รับเข้ามา
             $existingSkus = $this->wiTargetNewSkuService->CheckSku($TargetNewSkus);
-            // ตรวจสอบว่ามีรายการที่ซ้ำหรือไม่
             $duplicateFound = false;
             foreach ($TargetNewSkus as $TargetNewSku) {
                 foreach ($existingSkus as $existingSku) {
                     if ($existingSku->custid == $TargetNewSku['cust_id'] && $existingSku->target_sku_id == $TargetNewSku['new_sku']) {
                         $duplicateFound = true;
                         $sku_already = 'รหัสสินค้าที่ซ้ำ '.$existingSku->target_sku_id;
-                        break 2; // ออกจากการวนลูปทั้งหมด
+                        break 2;
                     }
                 }
             }
-            if ($duplicateFound) {// ถ้าพบรายการที่ซ้ำ
+            if ($duplicateFound) {
                 return response()->json([
                     'subMessage' => "ตรวจพบรหัสสินค้า ".$sku_already." ซ้ำในรายการสินค้าที่จะสั่งซ้ำ",
                     'message' => 'เกิดข้อผิดพลาด'

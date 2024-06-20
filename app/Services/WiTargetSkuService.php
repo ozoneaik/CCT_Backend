@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\WiTargetNewSku;
 use App\Models\WiTargetSku;
+use Carbon\Carbon;
 
 class WiTargetSkuService
 {
@@ -33,7 +34,7 @@ class WiTargetSkuService
         return $r1;
     }
 
-    public function getWiTargetSkuTwoAgo($target_month, $cust_id)
+    public function getWiTargetSkuTwoAgo($target_month, $cust_id): array
     {
         $Target = WiTargetSku::where('custid', $cust_id)->where('target_month', $target_month)->get();
         $TargetNewSku = WiTargetNewSku::where('custid', $cust_id)->where('new_target_month', $target_month)->get();
@@ -61,12 +62,16 @@ class WiTargetSkuService
 
     public function getWiTargetSkuAll($cust_id, $target_month): array
     {
-        $TargetSkuAll = WiTargetSku::where('custid', $cust_id)->with('SkuName')->get();
+//        $TargetSkuAll = WiTargetSku::where('custid', $cust_id)->with('SkuName')->get();
+        $TargetSkuAll = WiTargetSku::where('custid', $cust_id)
+            ->where('target_month', '<=', $target_month)
+            ->with('SkuName')
+            ->get();
         $TargetNewSkuAll = WiTargetNewSku::where('custid', $cust_id)
-            ->where('new_target_month','!=',$target_month)->with('SkuName')->get();
+            ->where('new_target_month', '!=', $target_month)->with('SkuName')->get();
         $TargetSkuSuperAll = [];
 
-        foreach ($TargetSkuAll as $index=>$TargetSku) {
+        foreach ($TargetSkuAll as $index => $TargetSku) {
             $sku_id = $TargetSku['target_sku_id'];
             if (!isset($TargetSkuSuperAll[$sku_id])) {
                 $TargetSkuSuperAll[$sku_id] = [
@@ -76,7 +81,7 @@ class WiTargetSkuService
                 ];
             }
         }
-        foreach ($TargetNewSkuAll as $index=>$TargetNewSku) {
+        foreach ($TargetNewSkuAll as $index => $TargetNewSku) {
             $sku_id = $TargetNewSku['new_sku'];
             if (!isset($TargetSkuSuperAll[$sku_id])) {
                 $TargetSkuSuperAll[$sku_id] = [
@@ -87,9 +92,28 @@ class WiTargetSkuService
             }
         }
 
-        // Convert associative array back to indexed array
-        $TargetSkuSuperAll = array_values($TargetSkuSuperAll);
 
-        return $TargetSkuSuperAll;
+        // Convert associative array back to indexed array
+        return array_values($TargetSkuSuperAll);
+    }
+
+    public function create($cust_id, $target_month,$CurrentSku): bool|string
+    {
+        try {
+            $CreateTargetSku = new WiTargetSku();
+            $CreateTargetSku->custid = $cust_id;
+            $CreateTargetSku->target_month = $target_month;
+            $CreateTargetSku->target_sku_id = $CurrentSku['sku_id'];
+            $CreateTargetSku->target_sku_sale = (int)$CurrentSku['target_sale'];
+            $CreateTargetSku->createon = Carbon::now();
+            return $CreateTargetSku->save();
+        }catch (\Exception $exception){
+            return $exception->getMessage();
+        }
+
+    }
+
+    public function delete($cust_id,$target_month){
+        return WiTargetSku::where('custid', $cust_id)->where('target_month', $target_month)->delete();
     }
 }

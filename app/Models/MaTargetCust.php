@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 /**
  * @method static take(int $int)
  * @method static where(string $string, string $username)
+ * @method static select(array $array)
  */
 class MaTargetCust extends Model
 {
@@ -18,13 +19,6 @@ class MaTargetCust extends Model
 
     protected $table = 'ma_target_cust';
 
-    protected static function boot() : void
-    {
-        parent::boot();
-        static::addGlobalScope('order', function (Builder $builder) {
-            $builder->orderBy('id', 'asc');
-        });
-    }
 
     public function getCustName(): BelongsTo
     {

@@ -29,6 +29,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //จำนวนร้านค้าทั้งหมด
     Route::group(['prefix' => 'ma_target_cust'], function () {
         Route::get('list/{target_month}/{target}',[MaTargetCustController::class,'getListTarget']);
+        Route::get('booth_list/{target_month}/{target}',[MaTargetCustController::class,'getListBooth']);
+        Route::get('train_list/{target_month}/{target}',[MaTargetCustController::class,'getListTrain']);
     });
 
     //เป้าหมายที่จะทำ
@@ -80,4 +82,3 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::post('/login', [AuthController::class, 'login']);
 
-Route::get('/test-list',[MaTargetCustController::class,'getListTarget']);

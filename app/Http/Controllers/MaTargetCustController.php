@@ -17,41 +17,56 @@ class MaTargetCustController extends Controller
         $this->maTargetCustService = $maTargetCustService;
     }
 
-    public function list(): JsonResponse
+
+    public function getListTarget($target_month,$target): JsonResponse
     {
-        try {
-            $user = Auth::user();
-            $username = !empty($user->username) ? $user->username : '';
-
-            $TargetCust = $this->maTargetCustService->getMaTargetCustById($username);
-            $TargetCustTotal = count($TargetCust);
-            $CustAllTotal = $this->maTargetCustService->getCustAllTotal($username);
-            $CustAllTotal = count($CustAllTotal);
-
-            return response()->json([
-                'message' => 'Success',
-                'TargetCust' => $TargetCust,
-                'TargetCustTotal' => $TargetCustTotal,
-                'CustAllTotal' => $CustAllTotal,
-            ],200);
-        }catch (\Exception $exception){
-            return response()->json([
-                'message' => $exception->getMessage()
-            ],400);
-        }
-    }
-
-    public function getListTarget($target_month,$target){
-        $cust_id = Auth::user()->username;
-        $results = $this->maTargetCustService->GetList($target_month,$cust_id,$target);
+        $sale_id = Auth::user()->username;
+        $results = $this->maTargetCustService->GetList($target_month,$sale_id,$target);
         $TargetCustTotal = count($results);
-        $CustAllTotal = $this->maTargetCustService->getCustAllTotal($cust_id);
+        $CustAllTotal = $this->maTargetCustService->getCustAllTotal($sale_id);
         $CustAllTotal = count($CustAllTotal);
+
+        $count_booth = 0;
+        $count_train = 0;
+        foreach ($results as $result) {
+            if ($result['sku_booth_count'] > 0){
+                $count_booth+=1;
+            }
+            if ($result['sku_train_count'] > 0){
+                $count_train+=1;
+            }
+        }
+        $BoothAllTotal = $count_booth;
+        $TrainAllTotal = $count_train;
+//        $BoothAllTotal = $this->maTargetCustService->getBoothAllTotal($target_month,$sale_id);
         return response()->json([
             'message' => 'Success',
             'TargetCust' => $results,
             'TargetCustTotal' => $TargetCustTotal,
             'CustAllTotal' => $CustAllTotal,
+            'BoothAllTotal' => $BoothAllTotal,
+            'TrainAllTotal' => $TrainAllTotal,
+            'TargetMonth' => $target_month,
+        ]);
+    }
+
+    public function getListBooth($target_month,$target): JsonResponse{
+        $sale_id = Auth::user()->username;
+        $results = $this->maTargetCustService->GetBoothList($target_month,$sale_id,$target);
+        return response()->json([
+            'message' => 'Success',
+            'TargetCust' => $results,
+            'TargetMonth' => $target_month,
+        ]);
+    }
+
+    public function getListTrain($target_month,$target): JsonResponse{
+        $sale_id = Auth::user()->username;
+        $results = $this->maTargetCustService->GetTrainList($target_month,$sale_id,$target);
+        return response()->json([
+            'message' => 'Success',
+            'TargetCust' => $results,
+            'TargetMonth' => $target_month,
         ]);
     }
 }

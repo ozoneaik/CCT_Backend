@@ -11,6 +11,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  * @method static take(int $int)
  * @method static where(string $string, $cust_id)
  * @method static find($id)
+ * @method static select(string $string)
+ * @method static leftJoin(string $string, string $string1, string $string2, string $string3)
  * @property mixed $startdate
  * @property mixed $enddate
  * @property mixed $custid

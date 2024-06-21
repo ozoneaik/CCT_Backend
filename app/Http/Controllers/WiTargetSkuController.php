@@ -77,10 +77,16 @@ class WiTargetSkuController extends Controller
         }
     }
 
-    public function create($cust_id, Request $request): JsonResponse
+    public function create($cust_id, Request $request,checkMonthController $checkMonthController): JsonResponse
     {
         try {
-
+            $target_month = Carbon::parse($this->convertDateTime($request['target_month']))->startOfMonth();
+            $check = $checkMonthController->checkTargetMonth($target_month);
+            if(!$check['status']){
+                return response()->json([
+                    'message' => $check['desc']
+                ], 400);
+            }
             $target_month = $request['target_month'];
 
             $CurrentSKu = $request['currentSku'];
@@ -94,7 +100,7 @@ class WiTargetSkuController extends Controller
             }
 
             return response()->json([
-                'message' => 'success'
+                'message' => 'สร้างรายการสินค้าสั่งซ้ำสำเร็จ'
             ], 200);
         } catch (\Exception $exception) {
             return response()->json([

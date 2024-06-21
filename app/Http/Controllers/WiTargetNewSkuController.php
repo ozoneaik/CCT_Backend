@@ -41,9 +41,18 @@ class WiTargetNewSkuController extends Controller
     }
 
 
-    public function create(WiTargetNewSkuRequest $request): JsonResponse
+    public function create($year,$month,WiTargetNewSkuRequest $request,checkMonthController $checkMonthController): JsonResponse
     {
         try {
+            $target_month = $year.'/'.$month;
+            $target_month = Carbon::parse($this->convertDateTime($target_month))->startOfMonth();
+            $check = $checkMonthController->checkTargetMonth($target_month);
+            if(!$check['status']){
+                return response()->json([
+                    'subMessage' => $check['desc']
+                ], 400);
+            }
+
             $TargetNewSkus = $request->skus;
             $sku_already = '';
             $existingSkus = $this->wiTargetNewSkuService->CheckSku($TargetNewSkus);

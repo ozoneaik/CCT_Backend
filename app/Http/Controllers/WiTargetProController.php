@@ -43,8 +43,17 @@ class WiTargetProController extends Controller
         return response()->json($sku_name);
     }
 
-    public function create(WiTargetProRequest $request): JsonResponse
+    public function create($year,$month,WiTargetProRequest $request,checkMonthController $checkMonthController): JsonResponse
     {
+        $target_month = $year.'/'.$month;
+        $target_month = Carbon::parse($this->convertDateTime($target_month))->startOfMonth();
+        $check = $checkMonthController->checkTargetMonth($target_month);
+        if(!$check['status']){
+            return response()->json([
+                'message' => $check['desc']
+            ], 400);
+        }
+
         $promotions = $request->all();
         if (!count($promotions) <= 0){
             $this->wiTargetProService->delete($promotions[0]['pro_month']);

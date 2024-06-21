@@ -6,7 +6,6 @@ use App\Http\Requests\WiTargetBoothRequest;
 use App\Services\WiTargetBoothService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class WiTargetBoothController extends Controller
 {
@@ -22,7 +21,6 @@ class WiTargetBoothController extends Controller
     }
 
     public function ListTargetBooth($year,$month,$cust_id) : JsonResponse{
-
         $target_month = $this->convertDateTime($year.'/'.$month);
         $listTargetBooths = $this->wiTargetBoothService->getWiTargetBooth($target_month,$cust_id);
         return response()->json([
@@ -31,9 +29,16 @@ class WiTargetBoothController extends Controller
         ]);
     }
 
-    public function create(WiTargetBoothRequest $request): JsonResponse
+    public function create(WiTargetBoothRequest $request,checkMonthController $checkMonthController): JsonResponse
     {
-        $target_month = $this->convertDateTime($request->booth_month);
+        $target_month = Carbon::parse($this->convertDateTime($request->booth_month))->startOfMonth();
+        $check = $checkMonthController->checkTargetMonth($target_month);
+        if(!$check['status']){
+            return response()->json([
+                'message' => $check['desc']
+            ], 400);
+        }
+
         $TargetBooth = $this->wiTargetBoothService->create($request->all(),$target_month);
         return response()->json([
             'TargetBooth' => $TargetBooth,
@@ -41,11 +46,15 @@ class WiTargetBoothController extends Controller
         ],200);
     }
 
-    public function update(){
-
-    }
-
-    public function delete($id) : JsonResponse{
+    public function delete($id,$year,$month,checkMonthController $checkMonthController) : JsonResponse{
+        $target_month = $year.'/'.$month;
+        $target_month = Carbon::parse($this->convertDateTime($target_month))->startOfMonth();
+        $check = $checkMonthController->checkTargetMonth($target_month);
+        if(!$check['status']){
+            return response()->json([
+                'message' => $check['desc']
+            ], 400);
+        }
         $deleteWiTargetBooth = $this->wiTargetBoothService->delete($id);
         return response()->json([
             'message' => $deleteWiTargetBooth ? 'ลบสำเร็จ' : 'ลบไม่สำเร็จ',

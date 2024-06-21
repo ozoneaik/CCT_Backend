@@ -40,10 +40,18 @@ class WiTargetTrainController extends Controller
         }
     }
 
-    public function create(WiTargetTrainRequest $request): JsonResponse
+    public function create(WiTargetTrainRequest $request,checkMonthController $checkMonthController): JsonResponse
     {
         $TargetTrain = $request->all();
+        $target_month = Carbon::parse($this->convertDateTime($TargetTrain['target_month']))->startOfMonth();
         $TargetTrain['target_month'] = $this->convertDateTime($TargetTrain['target_month']);
+        $check = $checkMonthController->checkTargetMonth($target_month);
+        if(!$check['status']){
+            return response()->json([
+                'message' => $check['desc']
+            ], 400);
+        }
+
         $TargetTrain = $this->wiTargetTrainService->create($TargetTrain);
         return response()->json([
             'message' => $TargetTrain ? 'บันทึกข้อมูลเสร็จสิ้น' : 'บันทึกข้อมูลไม่สำเร็จ',
@@ -51,8 +59,16 @@ class WiTargetTrainController extends Controller
 
     }
 
-    public function update($id, Request $request): JsonResponse
+    public function update($id,$year,$month, Request $request,checkMonthController $checkMonthController): JsonResponse
     {
+        $target_month = $year.'/'.$month;
+        $target_month = Carbon::parse($this->convertDateTime($target_month))->startOfMonth();
+        $check = $checkMonthController->checkTargetMonth($target_month);
+        if(!$check['status']){
+            return response()->json([
+                'message' => $check['desc']
+            ], 400);
+        }
         $request->validate([
             'desc' => 'required'
         ],[
@@ -64,8 +80,16 @@ class WiTargetTrainController extends Controller
         ], $TargetTrainUpdate ? 200 : 400);
     }
 
-    public function delete($id): JsonResponse
+    public function delete($id,$year,$month,checkMonthController $checkMonthController): JsonResponse
     {
+        $target_month = $year.'/'.$month;
+        $target_month = Carbon::parse($this->convertDateTime($target_month))->startOfMonth();
+        $check = $checkMonthController->checkTargetMonth($target_month);
+        if(!$check['status']){
+            return response()->json([
+                'message' => $check['desc']
+            ], 400);
+        }
         $TargetTrainDelete = $this->wiTargetTrainService->delete($id);
         return response()->json([
             'message' => $TargetTrainDelete ? 'ลบสำเร็จ' : 'ลบไม่สำเร็จ'

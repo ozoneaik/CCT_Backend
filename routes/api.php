@@ -51,21 +51,21 @@ Route::middleware('auth:sanctum')->group(function () {
     //รายการสินค้านำเสนอใหม่
     Route::group(['prefix' => 'wi_target_new_sku'], function () {
         Route::get('list_target_new_sku/{year}/{month}/{cust_id}', [WiTargetNewSkuController::class, 'ListNewSku']);
-        Route::post('/create', [WiTargetNewSkuController::class, 'create']);
+        Route::post('/create/{year}/{month}', [WiTargetNewSkuController::class, 'create']);
     });
 
     //รายการโปรโมชั่นที่นำเสนอ
     Route::group(['prefix' => 'wi_target_pro'], function () {
         Route::get('/list_target_pro/{year}/{month}/{cust_id}', [WiTargetProController::class, 'ListTargetPro']);
         Route::get('get_sku_name/{pro_sku}', [WiTargetProController::class, 'getSkuName']);
-        Route::post('/create', [WiTargetProController::class, 'create']);
+        Route::post('/create/{year}/{month}', [WiTargetProController::class, 'create']);
     });
 
     //ระยะเวลาออกบูธ
     Route::group(['prefix' => 'wi_target_booth'], function () {
         Route::get('/list_target_booth/{year}/{month}/{cust_id}', [WiTargetBoothController::class, 'ListTargetBooth']);
         Route::post('/create', [WiTargetBoothController::class, 'create']);
-        Route::delete('/delete/{id}', [WiTargetBoothController::class, 'delete']);
+        Route::delete('/delete/{id}/{year}/{month}', [WiTargetBoothController::class, 'delete']);
         Route::post('/create-boothSku', [WiTargetBoothSkuController::class, 'create']);
     });
 
@@ -73,8 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::group(['prefix' => 'wi_target_train'], function () {
         Route::get('/list_target_train/{year}/{month}/{cust_id}', [WiTargetTrainController::class, 'ListTargetTrain']);
         Route::post('/create', [WiTargetTrainController::class, 'create']);
-        Route::put('/update/{id}', [WiTargetTrainController::class, 'update']);
-        Route::delete('delete/{id}', [WiTargetTrainController::class, 'delete']);
+        Route::put('/update/{id}/{year}/{month}', [WiTargetTrainController::class, 'update']);
+        Route::delete('delete/{id}/{year}/{month}', [WiTargetTrainController::class, 'delete']);
     });
 
     Route::post('/logout', [AuthController::class, 'logout']);

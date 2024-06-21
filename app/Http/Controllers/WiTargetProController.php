@@ -23,12 +23,19 @@ class WiTargetProController extends Controller
 
     public function ListTargetPro($year,$month,$cust_id): JsonResponse
     {
-        $target_month = $this->convertDateTime($year . '/' . $month);
-        $listTargetPro = $this->wiTargetProService->getWiTargetPro($target_month,$cust_id);
-        return response()->json([
-            'listTargetPro' => $listTargetPro ? $listTargetPro->toArray() : [],
-            'message' => 'success',
-        ],$listTargetPro ? 200 : 400);
+        try {
+            $target_month = $this->convertDateTime($year . '/' . $month);
+            $listTargetPro = $this->wiTargetProService->getWiTargetPro($target_month,$cust_id);
+            return response()->json([
+                'listTargetPro' => $listTargetPro,
+                'message' => 'success',
+            ],200);
+        }catch (\Exception $exception){
+            return response()->json([
+                'listTargetPro' => [],
+                'message' => $exception->getMessage(),
+            ],400);
+        }
     }
 
     public function getSkuName($pro_sku): JsonResponse{

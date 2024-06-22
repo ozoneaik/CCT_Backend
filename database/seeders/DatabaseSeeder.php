@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
         // \App\Models\User::factory(10)->create();
 
          User::create([
-             'username' => '700010',
+             'username' => '70010',
              'password' => Hash::make('1111'),
              'name' => 'ภูวเดช พาณิชยโสภา'
          ]);

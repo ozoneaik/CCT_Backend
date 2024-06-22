@@ -25,7 +25,8 @@ class AuthController extends Controller
                 'message' => 'ผู้ใช้งานระบบหรือรหัสผ่านไม่ถูกต้อง'
             ], 422);
         }
-        $token = User::generateToken($user);
+//        $token = User::generateToken($user);
+        $token = $user->createToken('main')->plainTextToken;
         return response([
             'user' => $user,
             'token' => $token->plainTextToken,
@@ -46,5 +47,11 @@ class AuthController extends Controller
         return response()->json([
             'success' => true
         ]);
+    }
+
+    public function listUsers(): JsonResponse
+    {
+        $users = User::all();
+        return response()->json($users);
     }
 }

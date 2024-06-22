@@ -26,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/me', [AuthController::class, 'me']);
 
+    Route::get('list-users', [AuthController::class, 'listUsers']);
+
     //จำนวนร้านค้าทั้งหมด
     Route::group(['prefix' => 'ma_target_cust'], function () {
         Route::get('list/{target_month}/{target}',[MaTargetCustController::class,'getListTarget']);

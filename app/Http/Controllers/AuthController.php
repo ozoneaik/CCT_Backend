@@ -16,7 +16,6 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request): Response|Application|ResponseFactory
     {
-        dd('helloworld');
         $credentials = $request->validated();
         // ตรวจสอบข้อมูลผู้ใช้จากฐานข้อมูลโดยใช้ Eloquent หรือ Query Builder
         $user = User::where('username', $credentials['username'])->first();
@@ -30,7 +29,7 @@ class AuthController extends Controller
         $token = $user->createToken('main')->plainTextToken;
         return response([
             'user' => $user,
-            'token' => $token->plainTextToken,
+            'token' => $token,
             'message' => 'เข้าสู่ระบบสำเร็จ'
         ]);
     }

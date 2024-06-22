@@ -41,11 +41,20 @@ class WiTargetSaleController extends Controller
     }
 
 
-    public function create(WiTargetSaleRequest $request): JsonResponse
+    public function create(WiTargetSaleRequest $request,checkMonthController $check): JsonResponse
     {
-        $data = $request->all(); // รับข้อมูลทั้งหมดจาก request
-        $targetMonth = $this->convertDateTime($data['target_month']); // แปลง target_month เป็นวันที่
-        $data['target_month'] = $targetMonth; // อัพเดทข้อมูลใน array ด้วย target_month ที่แปลงแล้ว
+        $target_month = Carbon::parse($this->convertDateTime($request['target_month']))->startOfMonth();
+        $check = $check->checkTargetMonth($target_month);
+        if(!$check['status']){
+            return response()->json([
+                'message' => $check['desc']
+            ], 400);
+        }
+
+
+        $data = $request->all();
+        $targetMonth = $this->convertDateTime($data['target_month']);
+        $data['target_month'] = $targetMonth;
         try {
             $targetCheck = $this->wiTargetSaleService->check($data['target_month'], $data['cust_id']);
             if (!$targetCheck) {

@@ -87,8 +87,8 @@ class WiTargetSkuController extends Controller
                     'message' => $check['desc']
                 ], 400);
             }
-            $target_month = $request['target_month'];
 
+            $target_month = $request['target_month'];
             $CurrentSKu = $request['currentSku'];
             $target_month = $this->convertDateTime($target_month);
             $delete_sku = $this->wiTargetSkuService->delete($cust_id, $target_month);

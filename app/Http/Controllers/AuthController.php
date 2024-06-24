@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Http\JsonResponse;
@@ -53,5 +54,64 @@ class AuthController extends Controller
     {
         $users = User::all();
         return response()->json($users);
+    }
+
+    public function createUser(Request $request){
+        $request->validate([
+            '*.username' => 'required',
+            '*.name' => 'required',
+            '*.password' => 'required',
+        ]);
+        $user = $request['User'];
+        if (Hash::check($user['confirmPassword'],auth()->user()->password)){
+            $new_user = new User();
+            $new_user->name = $user['name'];
+            $new_user->username = $user['username'];
+            $new_user->password  = Hash::make($user['password']);
+            $new_user->save();
+            $message = 'สร้างผู้ใช้ '.$user['username'].' สำเร็จ';
+            $status = 200;
+        }else{
+            $message = 'รหัสผ่าน admin ผิด';
+            $status = 400;
+        }
+        return response()->json([
+            'message' => $message
+        ],$status);
+
+    }
+
+    public function updateUser(Request $request) : JsonResponse{
+        $user = $request->UserUpdate;
+        $status = 400;
+        if (Hash::check($user['confirmPassword'],auth()->user()->password)) {
+            $userUpdate = User::where('username',$user['username'])->first();
+            $userUpdate->name = $user['name'];
+            if (isset($user['password'])){
+                $userUpdate->password = Hash::make($user['password']);
+            }
+            $userUpdate->save();
+            $message = 'อัพเดทผู้ใช้ '.$user['username'].' สำเร็จ';
+            $status = 200;
+        }else{
+            $message = 'รหัสผ่าน admin ผิด';
+        }
+        return response()->json([
+            'message' => $message
+        ],$status);
+    }
+
+    public function deleteUser($username): JsonResponse{
+        try {
+            $user = User::where('username',$username)->first();
+            $user->delete();
+            return response()->json([
+                'message' => 'ลบผู้ใช้ '.$username.' สำเร็จ'
+            ],200);
+        }catch (\Exception $exception){
+            return response()->json([
+                'message' => $exception->getMessage()
+            ],400);
+        }
     }
 }

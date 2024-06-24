@@ -27,6 +27,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::get('list-users', [AuthController::class, 'listUsers']);
+    Route::post('create-user', [AuthController::class, 'createUser']);
+    Route::put('update-user', [AuthController::class, 'updateUser']);
+    Route::delete('delete-user/{username}', [AuthController::class, 'deleteUser']);
 
     //จำนวนร้านค้าทั้งหมด
     Route::group(['prefix' => 'ma_target_cust'], function () {

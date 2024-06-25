@@ -1,25 +1,18 @@
 <?php
 
 namespace App\Services;
-
 use App\Models\MaTargetCust;
-use App\Models\WiTargetBooth;
 use Illuminate\Support\Facades\DB;
 
 class MaTargetCustService
 {
-    public function getCustAllTotal($username)
-    {
-        $CustAllTotal = MatargetCust::where('fieldsaleid', $username)->get();
-        return $CustAllTotal ? $CustAllTotal : [];
-    }
-
     public function GetList($target_month,$sale_id){
         return MaTargetCust::select([
             'ma_target_cust.custid',
             'ma_customer.custname',
             DB::raw('COALESCE(wi_target_sale.target_sale, 0) AS target_sale'),
             DB::raw('COALESCE(ma_target_cust.percentsale, 0) AS percentsale'),
+            DB::raw('SUM(DISTINCT CASE WHEN wi_target_sku.target_month = "'.$target_month.'" THEN wi_target_sku.target_sku_sale END) AS sku_total_count'),
             DB::raw('COUNT(DISTINCT CASE WHEN wi_target_sku.target_month = "'.$target_month.'" THEN wi_target_sku.id END) AS sku_count'),
             DB::raw('COUNT(DISTINCT CASE WHEN wi_target_newsku.new_target_month = "'.$target_month.'" THEN wi_target_newsku.id END) AS new_sku_count'),
             DB::raw('COUNT(DISTINCT CASE WHEN wi_target_pro.pro_month = "'.$target_month.'" THEN wi_target_pro.id END) AS sku_pro_count'),
@@ -38,7 +31,7 @@ class MaTargetCustService
             ->leftJoin('wi_target_train', 'ma_target_cust.custid', '=', 'wi_target_train.custid')
             ->where('ma_target_cust.fieldsaleid', 'LIKE', $sale_id)
             ->groupBy('ma_target_cust.custid', 'ma_customer.custname', 'wi_target_sale.target_sale','ma_target_cust.percentsale')
-            ->orderBy('ma_target_cust.custid', 'asc')
+            ->orderBy('ma_customer.custname','asc')
             ->get();
     }
 }

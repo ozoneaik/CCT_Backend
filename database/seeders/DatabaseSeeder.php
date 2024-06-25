@@ -12,15 +12,15 @@ class DatabaseSeeder extends Seeder
     {
         // \App\Models\User::factory(10)->create();
 
-         User::create([
-             'username' => '70010',
-             'password' => Hash::make('1111'),
-             'name' => 'ภูวเดช พาณิชยโสภา'
-         ]);
         User::create([
             'username' => 'admin',
             'password' => Hash::make('1111'),
             'name' => 'แอดมิน'
         ]);
+         User::create([
+             'username' => '70010',
+             'password' => Hash::make('1111'),
+             'name' => 'ภูวเดช พาณิชยโสภา'
+         ]);
     }
 }
